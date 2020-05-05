@@ -62,3 +62,11 @@
 	}
 	zle -N add_sudo
 	bindkey "^s" add_sudo
+
+# Exit
+	function exit() {
+		BUFFER="exit"
+		zle end-of-line
+	}
+	zle -N exit
+	bindkey "^x" exit
