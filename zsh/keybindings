@@ -48,6 +48,17 @@
 	zle -N ls_current_dir
 	bindkey "^l" ls_current_dir
 
+# Exit
+	function exit_command() {
+		BUFFER="exit"
+		zle accept-line
+	}
+	zle -N exit_command
+	bindkey "^e" exit_command
+
+# re-claiming ctrl-s keybinding
+setopt noflowcontrol
+
 # Sudo
 	function add_sudo() {
 		BUFFER="sudo "$BUFFER
@@ -55,11 +66,4 @@
 	}
 	zle -N add_sudo
 	bindkey "^s" add_sudo
-
-# Exit
-	function exit() {
-		BUFFER="exit"
-		zle accept-line
-	}
-	zle -N exit
-	bindkey "^x" exit
+	
