@@ -66,7 +66,7 @@
 # Exit
 	function exit() {
 		BUFFER="exit"
-		zle end-of-line
+		zle accept-line
 	}
 	zle -N exit
 	bindkey "^x" exit
