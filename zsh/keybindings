@@ -1,13 +1,13 @@
 # up
-	function up_widget() {
+	function goto_parent_dir() {
 		BUFFER="cd .."
 		zle accept-line
 	}
-	zle -N up_widget
-	bindkey "^k" up_widget
+	zle -N goto_parent_dir
+	bindkey "^k" goto_parent_dir
 
 # git
-	function git_prepare() {
+	function git_add_commit_push() {
 		if [ -n "$BUFFER" ];
 			then
 				BUFFER="git add -A; git commit -m \"$BUFFER\" && git push"
@@ -20,17 +20,17 @@
 				
 		zle accept-line
 	}
-	zle -N git_prepare
-	bindkey "^g" git_prepare
+	zle -N git_add_commit_push
+	bindkey "^g" git_add_commit_push
 
 # home
-	function goto_home() { 
+	function goto_home_dir() { 
 		BUFFER="cd ~/"$BUFFER
 		zle end-of-line
 		zle accept-line
 	}
-	zle -N goto_home
-	bindkey "^h" goto_home
+	zle -N goto_home_dir
+	bindkey "^h" goto_home_dir
 
 # Edit and rerun
 	function edit_and_run() {
@@ -41,19 +41,12 @@
 	bindkey "^v" edit_and_run
 
 # LS
-	function ctrl_l() {
+	function ls_current_dir() {
 		BUFFER="ls"
 		zle accept-line
 	}
-	zle -N ctrl_l
-	bindkey "^l" ctrl_l
-
-# Enter
-	function enter_line() {
-		zle accept-line
-	}
-	zle -N enter_line
-	bindkey "^o" enter_line
+	zle -N ls_current_dir
+	bindkey "^l" ls_current_dir
 
 # Sudo
 	function add_sudo() {
