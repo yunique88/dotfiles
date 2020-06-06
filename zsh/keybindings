@@ -48,14 +48,6 @@
 	zle -N ls_current_dir
 	bindkey "^l" ls_current_dir
 
-# Exit
-	function exit_command() {
-		BUFFER="exit"
-		zle accept-line
-	}
-	zle -N exit_command
-	bindkey "^e" exit_command
-
 # re-claiming ctrl-s keybinding
 setopt noflowcontrol
 
