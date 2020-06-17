@@ -1,4 +1,65 @@
 # Setup
+##EMACS
+#### Install Melpa
+`
+(require 'package)
+(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))(not (gnutls-available-p))))(proto (if no-ssl "http" "https")))
+(add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
+(when (< emacs-major-version 24)
+(add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
+(package-initialize)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'load-path "~/.emacs.d/evil")
+(require 'evil)
+(evil-mode 1)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(load-theme 'dracula t)
+(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i@/!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+`
+to **~/.emacs** file
+
+- run command `git clone https://github.com/emacs-evil/evil ~/.emacs.d/evil`
+- in emacs, `M-x RET package-install RET dracula-theme`
+
+#### Reference
+##### Open a File
+`C-x C-f Dropbox/todo.org`t
+##### Change todo status directly
+`C-c C-t [status shortcut]`
+##### Change todo status (not recommended)
+`shift-right/left`
+##### New row with TODO heading
+`M-shift-RET`
+##### hyperlink
+`[[link url][description]]`
+##### open hyperlink
+`C-c C-o` or click
+##### fold/unfold current level headings
+`TAB`
+##### fold/unfold all level headings
+`shift-TAB`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## UBUNTU
 
 #### Dotfiles
@@ -50,34 +111,6 @@
 - Global Config tab에서 Trigger Input Method는 한/영키를 눌러 Multikey로 설정(왼쪽 오른쪽 모두)하고 Extrakey for trigger input method는 Disabled로 설정한다. (Mac에서는 command key이므로 대신 shift+space를 선택한다.)
 - Global Config tab에서 Program > Share State Among Window > All을 선택한다.
 <br/><br/>
-
-##EMACS
-#### Install Melpa
-`(require 'package)
-(let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
-(add-to-list 'package-archives
-             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-(add-to-list 'load-path "~/.emacs.d/evil")
-(require 'evil)
-(evil-mode 1)
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
-(load-theme 'dracula t)
-(setq org-todo-keywords
-  '((sequence "TODO" "IN-PROGRESS" "WAITING" "|" "DONE" "CANCELED")))
-`
-to **~/.emacs** file
-
-- run command `git clone https://github.com/emacs-evil/evil ~/.emacs.d/evil`
-- in emacs, `M-x RET package-install RET dracula-theme`
 
 ## Bluetooth Headphones
 - `sudo vim /etc/bluetooth/main.conf`
