@@ -14,7 +14,8 @@
 (evil-mode 1)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
-(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i@/!)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELED(c@)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELED(c@)")))
+(desktop-save-mode 1)
 `
 to **~/.emacs** file
 
