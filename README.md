@@ -64,6 +64,8 @@ to **~/.emacs** file
 #### Reference
 ##### File
 - `C-x C-f todo.org` : open todo.org file
+- `C-x C-s` : save file
+- `C-x C-c` : close file
 - `C-x 0` : close active (focused) window
 - `C-x 2` : split window vertically
 - `C-x 3` : split window horizontally
