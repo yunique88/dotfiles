@@ -1,7 +1,7 @@
 # Setup
 ## EMACS
 #### Install Melpa
-`
+```
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))(not (gnutls-available-p))))(proto (if no-ssl "http" "https")))
 (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
@@ -16,45 +16,96 @@
 (load-theme 'dracula t)
 (setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELED(c@)")))
 (desktop-save-mode 1)
-`
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; org-mode agenda options                                                ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; agenda key bind
+(define-key global-map "\C-ca" 'org-agenda)
+
+;; agenda set which files to look for
+(setq org-agenda-files (list "~/Dropbox/org/work.org"))
+
+;; open agenda in current window
+(setq org-agenda-window-setup (quote current-window))
+
+;; warn me of any deadlines in next 7 days
+(setq org-deadline-warning-days 7)
+
+;; show me tasks scheduled or due in next fortnight
+(setq org-agenda-span (quote fortnight))
+
+;; don't show tasks as scheduled if they are already shown as a deadline
+(setq org-agenda-skip-scheduled-if-deadline-is-shown t)
+
+;; don't give awarning colour to tasks with impending deadlines
+;; if they are scheduled to be done
+(setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
+
+;; don't show tasks that are scheduled or have deadlines in the
+;; normal todo list
+(setq org-agenda-todo-ignore-deadlines (quote all))
+(setq org-agenda-todo-ignore-scheduled (quote all))
+
+;; sort tasks in order of when they are due and then by priority
+(setq org-agenda-sorting-strategy
+  (quote
+   ((agenda deadline-up priority-down)
+    (todo priority-down category-keep)
+    (tags priority-down category-keep)
+    (search category-keep))))
+```
 to **~/.emacs** file
 
 - run command `git clone https://github.com/emacs-evil/evil ~/.emacs.d/evil`
 - in emacs, `M-x RET package-install RET dracula-theme`
 
 #### Reference
-##### Open a File
-`C-x C-f Dropbox/todo.org`t
-##### Change todo status directly
-`C-c C-t [status shortcut]`
-##### Change todo status (not recommended)
-`shift-right/left`
-##### New row with TODO heading
-`M-shift-RET`
-##### hyperlink
-`[[link url][description]]`
-##### open hyperlink
-`C-c C-o` or click
-##### fold/unfold current level headings
-`TAB`
-##### fold/unfold all level headings
-`shift-TAB`
-##### close active (focused) window
-`C-x 0`
-##### split window vertically
-`C-x 2`
-##### split window horizontally
-`C-x 3`
+##### File
+- `C-x C-f todo.org` : open todo.org file
+- `C-x 0` : close active (focused) window
+- `C-x 2` : split window vertically
+- `C-x 3` : split window horizontally
+
+##### Org Navigation
+- `C-c C-t [status shortcut]` : change todo status
+- `shift-right/left` : change todo status (not recommended)
+- `M-shift-RET` : new row with TODO heading
+- `M-RET` : new row without TODO heading
+- `TAB` : fold/unfold current level headings
+- `shift-TAB` : fold/unfold all level headings
+
+##### content
+- `[[link url][description]]` : link
+- `C-c C-o` or click : open hyperlink
+
+##### Schedule/ Deadlines - [link](https://orgmode.org/manual/Inserting-deadline_002fschedule.html)
+- `C-c C-d` : insert deadline stamp
+- `C-c C-s` : insert schedule stamp
+- `C-c / d` : show all deadlines
+- `C-1 C-c / d` : show all deadlines due tomorrow
+- `C-c / b` : show deadline/schedule item before given date
+- `C-c / a` : show deadline/schedule item after given date
+
+##### Agenda - [link](https://orgmode.org/worg/org-tutorials/orgtutorial_dto.html)
+- `C-c a a` : show agenda
+- `l` : show log (displays finished tasks and completion times)
+- `RET` : go to original location of the item in org file
+- `x` : show agenda
+
+#### [Cheatsheet](https://emacsclub.github.io/html/org_tutorial.html)
 
 
-#### Example
-[good examples](https://emacsclub.github.io/html/org_tutorial.html)
 
 
 
 
+-----------------------------------------------------------------
 
+-----------------------------------------------------------------
 
+-----------------------------------------------------------------
 
 
 
