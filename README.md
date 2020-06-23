@@ -1,5 +1,5 @@
 # Setup
-##EMACS
+## EMACS
 #### Install Melpa
 `
 (require 'package)
@@ -14,7 +14,7 @@
 (evil-mode 1)
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
-(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELED(c@)")))
+(setq org-todo-keywords '((sequence "TODO(t!)" "IN-PROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELED(c@)")))
 (desktop-save-mode 1)
 `
 to **~/.emacs** file
@@ -39,8 +39,16 @@ to **~/.emacs** file
 `TAB`
 ##### fold/unfold all level headings
 `shift-TAB`
+##### close active (focused) window
+`C-x 0`
+##### split window vertically
+`C-x 2`
+##### split window horizontally
+`C-x 3`
 
 
+#### Example
+[good examples](https://emacsclub.github.io/html/org_tutorial.html)
 
 
 
