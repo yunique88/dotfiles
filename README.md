@@ -2,6 +2,11 @@
 ## EMACS
 #### Install Melpa
 ```
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; basic functions                                                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; melpa
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))(not (gnutls-available-p))))(proto (if no-ssl "http" "https")))
 (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
@@ -9,13 +14,40 @@
 (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
 (package-initialize)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+
+;; evil mode (vim commands)
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
+
+;; desktop automatically re-open last closed file
+(desktop-save-mode 1)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; theme                                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; dracula theme
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'dracula t)
-(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i!)" "WAITING(w!)" "|" "DONE(d!)" "CANCELED(c@)")))
-(desktop-save-mode 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; org-mode options                                                       ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; org todo keywords
+;; ! = timestamp, @ = note with timestamp
+(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d!)" "CANCELED(c@)")))
+
+;; org tags align to right of the window
+(add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
+(defun place-agenda-tags ()
+  "Put the agenda tags by the right border of the agenda window."
+  (setq org-agenda-tags-column (- 4 (window-width)))
+  (org-agenda-align-tags))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; org-mode agenda options                                                ;;
@@ -25,7 +57,7 @@
 (define-key global-map "\C-ca" 'org-agenda)
 
 ;; agenda set which files to look for
-(setq org-agenda-files (list "~/Dropbox/org/work.org"))
+(setq org-agenda-files (list "~/Dropbox/org/"))
 
 ;; open agenda in current window
 (setq org-agenda-window-setup (quote current-window))
@@ -39,7 +71,11 @@
 ;; don't show tasks as scheduled if they are already shown as a deadline
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
 
-;; don't give awarning colour to tasks with impending deadlines
+;; don't show done tasks
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-skip-deadline-if-done t)
+
+;; don't give warning color to tasks with impending deadlines
 ;; if they are scheduled to be done
 (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
 
@@ -55,6 +91,63 @@
     (todo priority-down category-keep)
     (tags priority-down category-keep)
     (search category-keep))))
+
+;; my custom view of agenda and todos
+(setq org-agenda-custom-commands
+      '(("c" "My Custom Agenda View"
+         ((agenda "" ((org-agenda-span 1)
+                      (org-agenda-overriding-header 
+                       (format "%s\n%s%s%s\n%s"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string "TODAY" 20)
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))))
+          (agenda "" ((org-agenda-span 14)
+                      (org-agenda-start-on-weekday nil)
+                      (org-agenda-start-day "+1d")
+                      (org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string "NEXT 2 WEEKS" (symbol-value 'title_length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))))
+          (alltodo "" ((org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string "OTHER TODO's" (symbol-value 'title_length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))))
+          (alltodo "" ((org-agenda-todo-ignore-deadlines nil)
+                       (org-agenda-todo-ignore-scheduled nil)
+                       (org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string "ALL TODO's" (symbol-value 'title_length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))))))))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; private functions & variables                                          ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; line
+(setq halfbar '===============================================)
+(setq wholebar '==================================================================================================================)
+(setq title_length 20)
+
+;; center string format
+;; use-case example:
+;; (center-string "KJF" 10) ==> "   KJF    "
+(defun center-string (string size)
+  (let* ((padding (/ (- size (length string)) 2))
+         (lpad (+ (length string) padding))
+         (lformat (format "%%%ds" lpad))
+         (rformat (format "%%%ds" (- size))))
+    (format rformat (format lformat string))))
 ```
 to **~/.emacs** file
 
@@ -89,6 +182,7 @@ to **~/.emacs** file
 - `C-1 C-c / d` : show all deadlines due tomorrow
 - `C-c / b` : show deadline/schedule item before given date
 - `C-c / a` : show deadline/schedule item after given date
+- `shift-right/left` : go forward/backward a day
 
 ##### Agenda - [link](https://orgmode.org/worg/org-tutorials/orgtutorial_dto.html)
 - `C-c a a` : show agenda
