@@ -16,7 +16,6 @@
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
 ;; evil mode (vim commands)
-(add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
 
@@ -39,7 +38,7 @@
 
 ;; org todo keywords
 ;; ! = timestamp, @ = note with timestamp
-(setq org-todo-keywords '((sequence "TODO(t)" "IN-PROGRESS(i)" "WAITING(w)" "|" "DONE(d!)" "CANCELED(c@)")))
+(setq org-todo-keywords '((sequence "TODO(t)" "STARTED(s)" "WAITING(w)" "|" "DONE(d!)" "CANCELED(c@)" "DEFERRED(f@)")))
 
 ;; org tags align to right of the window
 (add-hook 'org-finalize-agenda-hook 'place-agenda-tags)
@@ -47,6 +46,14 @@
   "Put the agenda tags by the right border of the agenda window."
   (setq org-agenda-tags-column (- 4 (window-width)))
   (org-agenda-align-tags))
+
+;; bullets
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; one separator empty line between org mode should fold as expected
+(setq org-cycle-separator-lines 1)
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -75,6 +82,9 @@
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-skip-deadline-if-done t)
 
+;; don't show agenda block separators
+(setq org-agenda-block-separator nil)
+
 ;; don't give warning color to tasks with impending deadlines
 ;; if they are scheduled to be done
 (setq org-agenda-skip-deadline-prewarning-if-scheduled (quote pre-scheduled))
@@ -92,40 +102,42 @@
     (tags priority-down category-keep)
     (search category-keep))))
 
+;; use am/pm instead 24h format
+(setq org-agenda-timegrid-use-ampm t)
+
 ;; my custom view of agenda and todos
 (setq org-agenda-custom-commands
       '(("c" "My Custom Agenda View"
          ((agenda "" ((org-agenda-span 1)
-                      (org-agenda-overriding-header 
-                       (format "%s\n%s%s%s\n%s"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string "TODAY" 20)
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))))
+                      (org-agenda-sorting-strategy
+                        (quote ((agenda time-up priority-down tag-up) )))
+                      (org-agenda-overriding-header (create-header "TODAY"))))
           (agenda "" ((org-agenda-span 14)
                       (org-agenda-start-on-weekday nil)
                       (org-agenda-start-day "+1d")
-                      (org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string "NEXT 2 WEEKS" (symbol-value 'title_length))
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))))
-          (alltodo "" ((org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string "OTHER TODO's" (symbol-value 'title_length))
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))))
+                      (org-agenda-overriding-header (create-header "NEXT 2 WEEKS"))))
+          (alltodo "" ((org-agenda-overriding-header (create-header "OTHER TODO's"))))
           (alltodo "" ((org-agenda-todo-ignore-deadlines nil)
                        (org-agenda-todo-ignore-scheduled nil)
-                       (org-agenda-overriding-header (format "%s\n%s%s%s\n%s"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string "ALL TODO's" (symbol-value 'title_length))
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))))))))
+                       (org-agenda-overriding-header (create-header "ALL TODO's"))))))))
+
+;; refresh every 1 min agenda view
+(defun kiwon/org-agenda-redo-in-other-window ()
+  "Call org-agenda-redo function even in the non-agenda buffer."
+  (interactive)
+  (let ((agenda-window (get-buffer-window org-agenda-buffer-name t)))
+    (when agenda-window
+      (with-selected-window agenda-window (org-agenda-redo)))))
+(run-at-time nil 60 'kiwon/org-agenda-redo-in-other-window)
+
+;; define custom time grid
+(setq org-agenda-time-grid
+      (quote
+       ((daily today remove-match)
+        (500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400)
+        "......" "----------------")))
+
+
 
 
 
@@ -137,7 +149,16 @@
 ;; line
 (setq halfbar '===============================================)
 (setq wholebar '==================================================================================================================)
-(setq title_length 20)
+(setq title-length 20)
+
+;; headers
+(defun create-header (title)
+   (format "\n\n\n%s\n%s%s%s\n%s\n"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string title (symbol-value 'title-length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))
 
 ;; center string format
 ;; use-case example:
@@ -148,11 +169,26 @@
          (lformat (format "%%%ds" lpad))
          (rformat (format "%%%ds" (- size))))
     (format rformat (format lformat string))))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages (quote (org-bullets org-timeline dracula-theme))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 ```
 to **~/.emacs** file
+`M-x RET package-install RET dracula-theme`
+- dracula-theme
+- evil 
+- org-bullets
 
-- run command `git clone https://github.com/emacs-evil/evil ~/.emacs.d/evil`
-- in emacs, `M-x RET package-install RET dracula-theme`
 
 #### Reference
 ##### File
