@@ -1,8 +1,39 @@
+;; line
+(setq halfbar '===============================================)
+(setq wholebar '==================================================================================================================)
+(setq title-length 20)
+
+;; headers
+(defun create-header (title)
+   (format "\n\n\n%s\n%s%s%s\n%s\n"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string title (symbol-value 'title-length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))
+
+(defun create-first-header (title)
+   (format "%s\n%s%s%s\n%s\n"
+                        (symbol-value 'wholebar)
+                        (symbol-value 'halfbar)
+                        (center-string title (symbol-value 'title-length))
+                        (symbol-value 'halfbar)
+                        (symbol-value 'wholebar)))
+;; center string format
+;; use-case example:
+;; (center-string "KJF" 10) ==> "   KJF    "
+(defun center-string (string size)
+  (let* ((padding (/ (- size (length string)) 2))
+         (lpad (+ (length string) padding))
+         (lformat (format "%%%ds" lpad))
+         (rformat (format "%%%ds" (- size))))
+    (format rformat (format lformat string))))
+
 ;; don't show tasks as scheduled if they are already shown as a deadline
 (setq org-agenda-skip-scheduled-if-deadline-is-shown t)
 
 ;; agenda set which files to look for
-(setq org-agenda-files (list "~/Dropbox/org/"))
+(setq org-agenda-files (list "~/Dropbox/org/work.org"))
 
 ;; open agenda in current window
 (setq org-agenda-window-setup (quote current-window))
@@ -63,39 +94,4 @@
        ((daily today remove-match)
         (500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000 2100 2200 2300 2400)
         "......" "----------------")))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;                    private functions & variables                       ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; line
-(setq halfbar '===============================================)
-(setq wholebar '==================================================================================================================)
-(setq title-length 20)
-
-;; headers
-(defun create-header (title)
-   (format "\n\n\n%s\n%s%s%s\n%s\n"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string title (symbol-value 'title-length))
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))
-
-(defun create-first-header (title)
-   (format "%s\n%s%s%s\n%s\n"
-                        (symbol-value 'wholebar)
-                        (symbol-value 'halfbar)
-                        (center-string title (symbol-value 'title-length))
-                        (symbol-value 'halfbar)
-                        (symbol-value 'wholebar)))
-;; center string format
-;; use-case example:
-;; (center-string "KJF" 10) ==> "   KJF    "
-(defun center-string (string size)
-  (let* ((padding (/ (- size (length string)) 2))
-         (lpad (+ (length string) padding))
-         (lformat (format "%%%ds" lpad))
-         (rformat (format "%%%ds" (- size))))
-    (format rformat (format lformat string))))
 

@@ -10,4 +10,3 @@
 
 ;; one separator empty line between org mode should fold as expected
 (setq org-cycle-separator-lines 1)
-

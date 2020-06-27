@@ -1,3 +1,0 @@
-;; desktop automatically re-open last closed file
-(desktop-save-mode 1)
-
