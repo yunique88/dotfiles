@@ -41,3 +41,7 @@ alias sa='screen -r'
 
 # EMACS ALIAS
 alias e='emacs'
+
+# WINDOWS LINUX SUBSYSTEM
+alias subl='"/mnt/c/Program Files/Sublime Text 3/subl.exe"'
+
