@@ -42,7 +42,7 @@
 
 # LS
 	function ls_current_dir() {
-		BUFFER="ls"
+		BUFFER="ls -lh"
 		zle accept-line
 	}
 	zle -N ls_current_dir
